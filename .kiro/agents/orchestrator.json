@@ -1,0 +1,13 @@
+{
+  "name": "orchestrator",
+  "description": "Primary SDLC orchestrator. Given one ticket id, it dispatches the lead, researcher, developer, reviewer and janitor sub-agents in order and runs a bounded developer/reviewer review loop - also, showing whole pipeline execution and highliting current stage to the user.",
+  "prompt": "file://../prompts/orchestrator.md",
+  "tools": ["read", "write", "subagent"],
+  "resources": [
+    "file://../../AGENTS.md",
+    "file://../prompts/orchestrator.md",
+    "file://../templates/research-brief.md",
+    "file://../templates/implementation-notes.md",
+    "file://../templates/review-report.md"
+  ]
+}

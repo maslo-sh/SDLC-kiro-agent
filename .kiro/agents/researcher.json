@@ -1,0 +1,36 @@
+{
+  "name": "researcher",
+  "description": "Gathers best-practice guidance for a framed ticket from the knowledge-source skill and returns a Research Brief to the orchestrator. Use after a ticket has been framed and before implementation.",
+  "prompt": "file://../prompts/researcher.md",
+  "mcpServers": {
+    "Datadog": {
+      "url": "https://mcp.datadoghq.eu/api/unstable/mcp-server/mcp",
+      "type": "http",
+      "disabled": false
+    },
+    "Atlassian Remote MCP Server": {
+      "url": "https://mcp.atlassian.com/v1/mcp",
+      "type": "http",
+      "disabled": false
+    },
+    "AWS Knowledge": {
+      "url": "https://knowledge-mcp.global.api.aws",
+      "type": "http",
+      "disabled": false
+    }
+  },
+  "tools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "@Datadog",
+    "@Atlassian Remote MCP Server",
+    "@AWS Knowledge"
+  ],
+  "resources": [
+    "file://../prompts/researcher.md",
+    "skill://../skills/knowledge-source/SKILL.md",
+    "file://../templates/research-brief.md"
+  ]
+}

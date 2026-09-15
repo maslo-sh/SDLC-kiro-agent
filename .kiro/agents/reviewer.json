@@ -1,0 +1,25 @@
+{
+  "name": "reviewer",
+  "description": "Reviews the implementation against the Definition-of-Done quality gate and returns a Review Report with an outcome of Approved or Changes Requested. Use after the developer produces or revises an implementation.",
+  "prompt": "file://../prompts/reviewer.md",
+  "mcpServers": {
+    "OneSource - GitLab": {
+      "url": "https://gitlab-mcp.devops.tui/mcp",
+      "type": "http",
+      "disabled": false
+    }
+  },
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "grep",
+    "glob",
+    "@OneSource - GitLab"
+  ],
+  "resources": [
+    "file://../prompts/reviewer.md",
+    "skill://../skills/quality-gate/SKILL.md",
+    "file://../templates/review-report.md"
+  ]
+}

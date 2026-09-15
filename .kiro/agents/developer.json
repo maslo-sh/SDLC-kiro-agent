@@ -1,0 +1,24 @@
+{
+  "name": "developer",
+  "description": "Implements the framed ticket guided by the Research Brief: writes code, adds or updates tests, and returns Implementation Notes plus code to the orchestrator. Also revises the implementation in response to a Review Report's Required Changes during the review loop.",
+  "prompt": "file://../prompts/developer.md",
+  "mcpServers": {
+    "OneSource - GitLab": {
+      "url": "https://gitlab-mcp.devops.tui/mcp",
+      "type": "http",
+      "disabled": false
+    }
+  },
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "grep",
+    "glob",
+    "@OneSource - GitLab"
+  ],
+  "resources": [
+    "file://../prompts/developer.md",
+    "file://../templates/implementation-notes.md"
+  ]
+}

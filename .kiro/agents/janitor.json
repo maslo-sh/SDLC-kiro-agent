@@ -1,0 +1,9 @@
+{
+  "name": "janitor",
+  "description": "After executing whole SDLC pipeline, cleans up all artifacts made by other agents. Allowed only to manipulate files in .sdlc directory and the directory itself. Use after ticket moves to Approved state and orchestrator receives a permission to perform cleanup from user.",
+  "prompt": "file://../prompts/janitor.md",
+  "tools": ["read", "glob", "shell"],
+  "resources": [
+    "file://../prompts/janitor.md"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "lead",
+  "description": "Loads, validates, and frames one explicitly named ticket via the ticket-management skill, and returns a framed ticket (problem, scope, acceptance criteria) to the orchestrator. Use to frame a ticket at the start of the SDLC pipeline.",
+  "prompt": "file://../prompts/lead.md",
+  "mcpServers": {
+    "Atlassian Remote MCP Server": {
+      "url": "https://mcp.atlassian.com/v1/mcp",
+      "type": "http",
+      "disabled": false
+    }
+  },
+  "tools": [
+    "read",
+    "shell",
+    "@Atlassian Remote MCP Server"
+  ],
+  "resources": [
+    "file://../prompts/lead.md",
+    "skill://../skills/ticket-management/SKILL.md"
+  ]
+}
