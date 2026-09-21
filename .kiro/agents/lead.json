@@ -1,6 +1,6 @@
 {
   "name": "lead",
-  "description": "Loads, validates, and frames one explicitly named ticket via the ticket-management skill, and returns a framed ticket (problem, scope, acceptance criteria) to the orchestrator. Use to frame a ticket at the start of the SDLC pipeline.",
+  "description": "Sources a ticket either by picking an existing Jira ticket (jira-ticket-selection + jira-ticket-management) or by deducing one from the code (task-framing-codebase-investigation), then validates and frames it (problem, scope, acceptance criteria) for the orchestrator. Use to frame a ticket at the start of the SDLC pipeline.",
   "prompt": "file://../prompts/lead.md",
   "mcpServers": {
     "Atlassian Remote MCP Server": {
@@ -16,6 +16,8 @@
   ],
   "resources": [
     "file://../prompts/lead.md",
-    "skill://../skills/ticket-management/SKILL.md"
+    "skill://../skills/jira-ticket-selection/SKILL.md",
+    "skill://../skills/jira-ticket-management/SKILL.md",
+    "skill://../skills/task-framing-codebase-investigation/SKILL.md"
   ]
 }

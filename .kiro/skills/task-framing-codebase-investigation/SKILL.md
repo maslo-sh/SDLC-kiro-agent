@@ -1,7 +1,7 @@
 ---
 inclusion: manual
-name: Project Investigation
-description: Investigate the repository as a whole, select the single highest-value piece of work, and return exactly one self-contained task frame as text to the orchestrator for the Researcher agent. Read-only; writes no files.
+name: task-framing-codebase-investigation
+description: The Lead's "deduce a ticket from the code" path — investigate the repository as a whole, select the single highest-value piece of work, and return exactly one self-contained task frame as text to the orchestrator for the Researcher agent. Read-only; writes no files.
 ---
 
 # Task Framing (Lead)
@@ -101,5 +101,4 @@ A frame returned without this pass is a failure, even if the selection was right
 
 ## Phase 5 - Return contract
 
-Emit the frame **inline in your response**, wrapped in the delimiters below exactly, so the
-orchestrator can extract it without parsing prose.
+Emit the frame **inline in your response**, wrapped in the delimiters below exactly, so the orchestrator can extract it without parsing prose.

@@ -6,7 +6,7 @@
 # The pipeline definition lives under this repo's .kiro/ directory:
 #   .kiro/agents/     the five agent configs
 #   .kiro/prompts/    the role prompt bodies
-#   .kiro/skills/     the ticket-management / knowledge-source / quality-gate skills
+#   .kiro/skills/     domain skills (jira-*, gitlab-*, knowledge-source, quality-gate, task-framing-*)
 #   .kiro/templates/  the artifact templates
 #   AGENTS.md         cross-tool entry point (repo root), referenced by the orchestrator
 #

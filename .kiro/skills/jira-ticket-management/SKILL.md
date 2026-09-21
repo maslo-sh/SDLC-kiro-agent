@@ -1,5 +1,5 @@
 ---
-name: ticket-management
+name: jira-ticket-management
 description: Read a Jira ticket, change its status, and comment on it via the Jira Cloud REST API using curl. Use to load a named ticket and record its progress through the SDLC pipeline.
 version: "2.0"
 ---

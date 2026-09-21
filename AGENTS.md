@@ -6,14 +6,16 @@ plain Markdown and Kiro agent configs: Kiro loads the agents in `.kiro/agents/`,
 Cursor read this file to discover the model, and Claude Code can treat it as its entry point by
 symlinking `CLAUDE.md → AGENTS.md`.
 
-The **entry point** is one ticket **explicitly named by the operator** when the Orchestrator is
-invoked. The Orchestrator dispatches that ticket id to the Lead, whose job is to load, validate, and
-frame that specific ticket rather than choosing from a backlog.
+The **entry point** is the operator's choice, at Orchestrator invocation, of how to source the one
+ticket to work: either **pick an existing Jira ticket** (the Lead lists the open tickets and the
+operator chooses one) or **deduce a ticket from the code** (the Lead investigates the repository and
+proposes one). The Orchestrator dispatches the chosen path to the Lead, whose job is to source,
+validate, and frame that single ticket.
 
 ## The Model — Orchestrator + Four Sub-agents
 
-A primary **Orchestrator** coordinates four **worker sub-agents**: a **Lead** (loads, validates, and
-frames one explicitly named ticket), a **Researcher** (gathers best-practice guidance), a
+A primary **Orchestrator** coordinates four **worker sub-agents**: a **Lead** (sources, validates, and
+frames one ticket — either picked from Jira or deduced from the code), a **Researcher** (gathers best-practice guidance), a
 **Developer** (writes code), and a **Reviewer** (reviews against a Definition-of-Done).
 
 Control is **centralized at the Orchestrator**. It is a coordinating layer *above* the four workers,
@@ -52,7 +54,8 @@ deliverable is the code the Developer writes.
 The Orchestrator (`.kiro/prompts/orchestrator.md`) is the primary agent you invoke to drive one named
 ticket end to end. It:
 
-- accepts the **explicitly named ticket id** the operator supplies at invocation,
+- accepts the operator's **choice of sourcing path** at invocation (pick an existing Jira ticket, or
+  deduce one from the code), passing along a ticket id if the operator named one,
 - **dispatches each stage in order** — Lead frames → Researcher briefs → Developer implements →
   Reviewer reviews — to the responsible worker sub-agent,
 - **consumes the artifact each worker returns** and supplies it as input to the next stage,
@@ -69,7 +72,7 @@ Every input is **supplied by the Orchestrator**; every artifact is **returned to
 
 | Stage | Worker | Orchestrator supplies | Worker returns | Artifact path |
 |-------|--------|-----------------------|----------------|---------------|
-| 1. Frame | Lead | Explicitly named ticket id | Framed ticket | (in conversation) |
+| 1. Frame | Lead | Sourcing path (pick a Jira ticket, or deduce from code) | Framed ticket | (in conversation) |
 | 2. Research | Researcher | Framed ticket | Research Brief | `.sdlc/<TICKET-ID>/research-brief.md` |
 | 3. Implement | Developer | Research Brief + framed ticket | Implementation Notes + code | `.sdlc/<TICKET-ID>/implementation-notes.md` |
 | 4. Review (loop) | Reviewer | Implementation Notes + code | Review Report (`Approved` / `Changes Requested`) | `.sdlc/<TICKET-ID>/review-report-<n>.md` |
@@ -96,8 +99,9 @@ The review cap defaults to **3** and can be overridden by the operator at invoca
 There is no peer-to-peer handoff. Each relationship is a worker returning an artifact to the
 Orchestrator, which then supplies it to the next stage:
 
-1. **Operator → Orchestrator → Lead.** The operator names a ticket; the Orchestrator dispatches that
-   ticket id to the Lead, which loads, validates, and frames it.
+1. **Operator → Orchestrator → Lead.** The operator chooses a sourcing path (pick a Jira ticket or
+   deduce one from the code); the Orchestrator dispatches that path to the Lead, which sources,
+   validates, and frames the ticket.
 2. **Lead → Orchestrator → Researcher.** The Lead returns the framed ticket; the Orchestrator
    supplies it to the Researcher.
 3. **Researcher → Orchestrator → Developer.** The Researcher returns the Research Brief; the
@@ -140,9 +144,12 @@ installed global agents don't appear, the picker is stale — run **Developer: R
 restart Kiro (Kiro scans `~/.kiro/agents/` at startup and doesn't always live-reload). If a workspace
 defines an agent of the same name, that workspace version is shown instead of the global one.
 
-Then name or describe a ticket, for example:
-- `Run PROJ-123 through the pipeline` (fetched from Jira via the jira-query skill), or
-- `Take this ticket through the pipeline: <paste the ticket text>`.
+Then tell the Orchestrator how to source the ticket, one of the two paths, for example:
+- **Pick from Jira (quicker):** `Show me the open tickets to pick one` (the Lead lists them via the
+  jira-ticket-selection skill and you choose), or name one directly with
+  `Run PROJ-123 through the pipeline` (read via the jira-ticket-management skill).
+- **Deduce from code (longer):** `Find the highest-value work in this repo and take it through the
+  pipeline` (the Lead investigates via the task-framing-codebase-investigation skill and proposes one).
 
 The Orchestrator frames it via the Lead, then dispatches the Researcher, Developer, and Reviewer,
 running the review loop until the ticket is approved or the review cap (default 3) is reached. The
@@ -177,8 +184,13 @@ below.
 
 ### Skills (`.kiro/skills/`)
 
-- [Ticket Management](.kiro/skills/ticket-management/SKILL.md)
+- [Jira Ticket Selection](.kiro/skills/jira-ticket-selection/SKILL.md)
+- [Jira Ticket Management](.kiro/skills/jira-ticket-management/SKILL.md)
+- [Task Framing — Codebase Investigation](.kiro/skills/task-framing-codebase-investigation/SKILL.md)
 - [Knowledge Source](.kiro/skills/knowledge-source/SKILL.md)
 - [Quality Gate](.kiro/skills/quality-gate/SKILL.md)
+- [GitLab Push Commit](.kiro/skills/gitlab-push-commit/SKILL.md)
+- [GitLab Create Merge Request](.kiro/skills/gitlab-create-merge-request/SKILL.md)
+- [GitLab Review Comments](.kiro/skills/gitlab-review-comments/SKILL.md)
 
 All links are repo-relative so they resolve on any machine after a clone.

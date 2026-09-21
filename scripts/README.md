@@ -26,8 +26,9 @@ Because the global configs use absolute paths into `~/.kiro/sdlc-agent/` (a copy
 the agents keep working no matter which workspace you open. Re-run the script after editing any
 prompt or skill in this repo to refresh the installed copy.
 
-The pipeline needs **no seed data**: tickets come from what you describe at invocation (or Jira via
-the `jira-query` skill), knowledge comes from the target workspace's own docs, and the hand-off
+The pipeline needs **no seed data**: tickets come either from Jira (the `jira-ticket-selection` and
+`jira-ticket-management` skills) or are deduced from the target repo's code (the
+`task-framing-codebase-investigation` skill), knowledge comes from the target workspace's own docs, and the hand-off
 artifacts are written to a temporary `.sdlc/<TICKET-ID>/` directory inside whatever repo you run it
 in.
 

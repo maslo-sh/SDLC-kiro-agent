@@ -9,11 +9,11 @@ tooling.
 
 Five roles — an **Orchestrator** and four workers it dispatches:
 
-- **Orchestrator** — the primary agent. It accepts one explicitly named ticket, dispatches each
-  stage in order, consumes each worker's returned artifact and supplies it to the next stage, and
-  runs the bounded Developer↔Reviewer review loop.
-- **Lead** — loads, validates, and frames the one explicitly named ticket (it does not select from a
-  backlog).
+- **Orchestrator** — the primary agent. It accepts the operator's choice of sourcing path (pick a
+  Jira ticket or deduce one from the code), dispatches each stage in order, consumes each worker's
+  returned artifact and supplies it to the next stage, and runs the bounded Developer↔Reviewer review loop.
+- **Lead** — sources, validates, and frames one ticket — either picked from Jira (list → choose →
+  read) or deduced from the code — and returns a single framed ticket.
 - **Researcher** — gathers best-practice guidance for the framed ticket from a knowledge source.
 - **Developer** — implements the ticket, writing code and Implementation Notes, and revises on review
   feedback.
@@ -99,7 +99,7 @@ restart, use the Kiro CLI path above, which reads the same global configs.
 
 | Stage | Worker | Orchestrator supplies | Worker returns | Artifact |
 |-------|--------|-----------------------|----------------|----------|
-| 1. Frame | Lead | Explicitly named ticket id | Framed ticket | (in conversation) |
+| 1. Frame | Lead | Sourcing path (pick a Jira ticket, or deduce from code) | Framed ticket | (in conversation) |
 | 2. Research | Researcher | Framed ticket | Research Brief | `research-brief.md` |
 | 3. Implement | Developer | Research Brief + framed ticket | Implementation Notes + code | `implementation-notes.md` |
 | 4. Review (loop) | Reviewer | Implementation Notes + code | Review Report | `review-report-<n>.md` |
@@ -122,11 +122,19 @@ is in [`AGENTS.md`](AGENTS.md).
 
 ## Configuring the sources
 
-The council reaches its tickets and knowledge through two skills, each a documented operation
-contract:
+The council reaches its tickets and knowledge through skills, each a documented operation
+contract. The Lead sources a ticket one of two ways:
 
-- **Ticket Management** —
-  [`.kiro/skills/ticket-management/SKILL.md`](.kiro/skills/ticket-management/SKILL.md)
+- **Jira Ticket Selection** (quicker) —
+  [`.kiro/skills/jira-ticket-selection/SKILL.md`](.kiro/skills/jira-ticket-selection/SKILL.md)
+  (`list_tickets`, `select_ticket`). Lists the open Jira tickets and lets the operator pick one,
+  then hands the chosen key to Jira Ticket Management's `read`. Same Jira credentials as below.
+- **Task Framing — Codebase Investigation** (longer) —
+  [`.kiro/skills/task-framing-codebase-investigation/SKILL.md`](.kiro/skills/task-framing-codebase-investigation/SKILL.md).
+  Investigates the repository, deduces the single highest-value piece of work, and proposes one task
+  frame. Read-only; needs no external credentials.
+- **Jira Ticket Management** —
+  [`.kiro/skills/jira-ticket-management/SKILL.md`](.kiro/skills/jira-ticket-management/SKILL.md)
   (`read`, `change_ticket_status`, `comment`). Talks to the Jira Cloud REST API with `curl`, using
   `JIRA_BASE_URL` / `JIRA_EMAIL` / `JIRA_API_TOKEN` from the environment or a `.env` file in the repo
   the agent runs in.

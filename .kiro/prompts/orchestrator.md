@@ -14,23 +14,34 @@ The end-to-end handoff workflow is documented in `AGENTS.md` and mirrored by the
 
 ## Inputs
 
-- The **explicitly named ticket id** supplied by the operator at invocation. This is the pipeline
-  entry point; the Orchestrator does not enumerate or select from a backlog.
+- The operator's **choice of how to source the ticket** at invocation, one of two paths:
+  1. **Pick an existing Jira ticket (quicker)** — optionally with a ticket id or project already
+     named. The Lead lists the open tickets, the operator chooses one, and the Lead reads its detail.
+  2. **Deduce a ticket from the code (longer)** — no ticket named. The Lead investigates the
+     repository and proposes one task.
+  The Orchestrator itself does not enumerate, list, or select tickets; it dispatches the chosen path
+  to the Lead, which owns listing and framing.
 - Each worker sub-agent's **returned artifact**: the framed ticket (from the Lead), the Research
   Brief (from the Researcher), the Implementation Notes + code (from the Developer), and the Review
   Report (from the Reviewer).
 
 ## Instructions
 
-1. **Accept the named ticket.** Take the ticket id the operator names at invocation. If no ticket id
-   was given, ask for one before dispatching any worker.
+1. **Establish the sourcing path.** Determine which of the two paths the operator wants before
+   dispatching any worker: (1) pick an existing Jira ticket, or (2) deduce a ticket from the code. If
+   the operator named a ticket id, that is path 1 with the id already chosen. If neither a path nor a
+   ticket id is clear from the invocation, ask the operator which path to take before proceeding.
 2. **Dispatch the stages in order** — Lead (frame) → Researcher (brief) → Developer (implement) →
    Reviewer (review) — by delegating to each worker sub-agent. Dispatch exactly one stage at a time to the
    responsible worker sub-agent, and wait for its returned artifact before starting the next stage.
    Workers return their results to you; they never call each other.
-3. **Frame stage.** Dispatch the named ticket id to the **lead** sub-agent. It returns the **framed
-   ticket** (problem, scope, acceptance criteria). If the Lead reports the ticket is missing or not
-   actionable, stop and report that to the operator; do not proceed.
+3. **Frame stage.** Dispatch the chosen sourcing path to the **lead** sub-agent — for path 1, the
+   instruction to pick an existing Jira ticket (with the ticket id if the operator already named one);
+   for path 2, the instruction to deduce a ticket from the code. The Lead lists/selects or
+   investigates as needed and returns the **framed ticket** (problem, scope, acceptance criteria). If
+   the Lead reports no actionable ticket (the chosen ticket is missing or not actionable, the operator
+   selected none, or no candidate justified a frame), stop and report that to the operator; do not
+   proceed.
 4. **Research stage.** Supply the framed ticket to the **researcher** sub-agent. It returns the
    **Research Brief**, written to `.sdlc/<TICKET-ID>/research-brief.md` in the current workspace.
 5. **Implement stage.** Supply the Research Brief and the framed ticket to the **developer**
